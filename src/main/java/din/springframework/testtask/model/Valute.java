@@ -6,6 +6,7 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.persistence.*;
 import javax.xml.bind.annotation.*;
 import java.io.Serializable;
+import java.util.Set;
 
 @XmlRootElement(name = "Valute")
 @Data
@@ -13,8 +14,8 @@ import java.io.Serializable;
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"valcurs"})
 @Builder
-@Entity(name = "valute")
 @XmlAccessorType(XmlAccessType.FIELD)
+@Entity
 @XmlType(name = "Valute"/*, propOrder = {
         "id",
         "numCode",
@@ -30,33 +31,35 @@ public class Valute implements Serializable {
     @XmlElement(name = "CharCode", required = true)
     private String charCode;
 
+    @Transient
     @XmlElement(name = "Nominal", required = true)
     private String nominal;
 
     @XmlElement(name = "Name", required = true)
     private String name;
 
+    @Transient
     @XmlElement(name = "Value", required = true)
     private String value;
 
-    @XmlAttribute(name = "ID")
     @Id
-    @Column(insertable = false, updatable = false)
+    @XmlAttribute(name = "ID")
+    @Column(name = "valute_id")
     private String id;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @Transient
     private ValCurs valcurs;
+
+    @OneToMany(mappedBy = "valute")
+    private Set<CursValute> cursValute;
 
     @Override
     public String toString() {
         return "\n Valute{" +
                 "numCode='" + numCode + '\'' +
                 ", charCode='" + charCode + '\'' +
-                ", nominal='" + nominal + '\'' +
                 ", name='" + name + '\'' +
-                ", value='" + value + '\'' +
                 ", id='" + id + '\'' +
-                ", valcurs=" + valcurs +
                 '}';
     }
 }

@@ -17,18 +17,15 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity(name = "valcurs")
 @XmlType(name = "ValCurs"/*, propOrder = {
         "valute",
          "id"}*/)
 public class ValCurs implements Serializable {
 
     @XmlElement(name = "Valute")
-    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "valcurs")
     private Set<Valute> valute;
 
     @XmlID
-    @Id
     @XmlAttribute(name = "Date")
     private String date;
 
