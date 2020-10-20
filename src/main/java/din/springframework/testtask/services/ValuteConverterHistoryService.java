@@ -7,6 +7,5 @@ import java.util.Set;
 import java.util.UUID;
 
 public interface ValuteConverterHistoryService extends CrudService<ValuteConverterHistory, UUID> {
-    /*Set<ValuteConverterHistory> getValuteConverterHistoriesByQueryDateIsBetween(Date dateFrom, Date dateTo,
-                                                                                int dayDifference);*/
+
 }

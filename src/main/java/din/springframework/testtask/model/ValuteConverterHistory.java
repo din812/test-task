@@ -5,10 +5,12 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import java.sql.Date;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
@@ -30,5 +32,6 @@ public class ValuteConverterHistory {
 
     private String goalSum;
 
-    private Date queryDate;
+    @Column(columnDefinition = "DATE")
+    private LocalDate queryDate;
 }

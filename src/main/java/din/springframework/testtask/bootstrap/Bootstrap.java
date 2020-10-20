@@ -13,10 +13,8 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
-import java.math.BigDecimal;
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.sql.Date;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -58,12 +56,8 @@ public class Bootstrap implements CommandLineRunner {
                         .forEach(valute -> {
                             CursValute cursValute = new CursValute();
                                 cursValute.setDate(valCurs.getDate());
-                                //cursValute.setNumCode(valute.getNumCode());
-                                //cursValute.setCharCode(valute.getCharCode());
                                 cursValute.setNominal(valute.getNominal());
-                                //cursValute.setName(valute.getName());
                                 cursValute.setValue(valute.getValue());
-                                //cursValute.setId(valute.getId());
                                 cursValute.setValute(valute);
 
                                 System.out.println(cursValute.toString());
@@ -88,14 +82,14 @@ public class Bootstrap implements CommandLineRunner {
         converterHistory.setGoalSum("353355.59909");
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate localDateTo = LocalDate.parse("20.10.2020", formatter);
+        LocalDate localDateTo = LocalDate.parse("01.10.2020", formatter);
 
-        converterHistory.setQueryDate(Date.valueOf(localDateTo));
+        converterHistory.setQueryDate(localDateTo);
 
         valuteConverterHistoryRepository.save(converterHistory);
 
-        String formattedLocalDateTo = localDateTo.format(formatter);
-
-
+        System.out.println(valuteConverterHistoryRepository
+                .findAllByQueryDateLessThanEqualAndQueryDateGreaterThanEqual(LocalDate.parse("20.10.2020", formatter),
+                        LocalDate.parse("15.10.2020", formatter)));
     }
 }
