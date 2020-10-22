@@ -1,8 +1,14 @@
 package din.springframework.testtask.repositories;
 
 import din.springframework.testtask.model.User;
-import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.CrudRepository;
+import org.springframework.data.repository.PagingAndSortingRepository;
 
-public interface UserRepository extends JpaRepository<User, Long> {
+import java.util.Optional;
+
+public interface UserRepository extends PagingAndSortingRepository<User, Long> {
     User findByUsername(String username);
+
 }

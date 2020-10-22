@@ -1,21 +1,21 @@
 package din.springframework.testtask.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import org.assertj.core.internal.bytebuddy.build.HashCodeAndEqualsPlugin;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
 import javax.validation.constraints.Size;
-import java.util.Collection;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString(exclude = "converterHistories")
+@EqualsAndHashCode(exclude = {"roles", "converterHistories"})
 @Builder
 @Table(name = "t_user")
 public class User implements UserDetails {
@@ -33,11 +33,20 @@ public class User implements UserDetails {
     private String passwordConfirm;
 
     @ManyToMany(fetch = FetchType.EAGER)
-    private Set<Role> roles;
+    private Set<Role> roles = new HashSet<>();
+
+    @OneToMany(mappedBy = "user")
+    private Set<ValuteConverterHistory> converterHistories;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        return getRoles();
+        Set<Role> roles = this.getRoles();
+        List<SimpleGrantedAuthority> authorities = new ArrayList<>();
+
+        for (Role role : roles) {
+            authorities.add(new SimpleGrantedAuthority(role.getName()));
+        }
+        return authorities;
     }
 
     @Override

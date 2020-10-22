@@ -1,25 +1,31 @@
 package din.springframework.testtask.controllers;
 
-import din.springframework.testtask.services.UserService;
+import din.springframework.testtask.model.User;
+import din.springframework.testtask.services.UserServiceImpl;
+import din.springframework.testtask.services.ValuteConverterHistoryServiceImpl;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
 
+@Slf4j
 @Controller
 public class AdminController {
 
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
+    private final ValuteConverterHistoryServiceImpl historyService;
 
-    public AdminController(UserService userService) {
-        this.userService = userService;
+    public AdminController(UserServiceImpl userServiceImpl, ValuteConverterHistoryServiceImpl historyService) {
+        this.userServiceImpl = userServiceImpl;
+        this.historyService = historyService;
     }
 
     @GetMapping("/admin")
-    public String userList(Model model) {
-        model.addAttribute("allUsers", userService.allUsers());
+    public String userList(@PageableDefault(size = 1) @Qualifier("allUsersPage") Pageable pageableUsers, Model model) {
+        model.addAttribute("allUsersPage", userServiceImpl.findAll(pageableUsers));
         return "admin";
     }
 
@@ -28,14 +34,31 @@ public class AdminController {
                               @RequestParam(required = true, defaultValue = "" ) String action,
                               Model model) {
         if (action.equals("delete")){
-            userService.deleteUser(userId);
+            userServiceImpl.deleteUser(userId);
         }
         return "redirect:/admin";
     }
 
-    @GetMapping("/admin/gt/{userId}")
-    public String  gtUser(@PathVariable("userId") Long userId, Model model) {
-        model.addAttribute("allUsers", userService.getUserList(userId));
+    @GetMapping("/admin/get/")
+    public String  getUser(@PageableDefault(size = 3) @Qualifier("allUsersPage") Pageable pageableUsers,
+                           @Qualifier("userHistory") Pageable pageableHistory,
+                           @ModelAttribute("userId") String userId, Model model) {
+        model.addAttribute("allUsersPage", userServiceImpl.findAll(pageableUsers));
+        try {
+            User userFound = userServiceImpl.findUserById(Long.valueOf(userId));
+
+            if (userFound.getId() == null) {
+                model.addAttribute("idNotFound", true);
+            } else {
+                model.addAttribute("user", userFound);
+                model.addAttribute("userHistory",
+                        historyService.findAllByUserIdOrderByUuid(Long.valueOf(userId), pageableHistory));
+                System.out.println(pageableHistory.getPageSize());
+            }
+        } catch (NumberFormatException e) {
+            model.addAttribute("requestError", true);
+        }
+
         return "admin";
     }
 }

@@ -1,12 +1,9 @@
 package din.springframework.testtask.bootstrap;
 
-import din.springframework.testtask.model.CursValute;
-import din.springframework.testtask.model.ValCurs;
-import din.springframework.testtask.model.ValuteConverterHistory;
-import din.springframework.testtask.repositories.CursValuteRepository;
-import din.springframework.testtask.repositories.ValuteConverterHistoryRepository;
-import din.springframework.testtask.repositories.ValuteRepository;
+import din.springframework.testtask.model.*;
+import din.springframework.testtask.repositories.*;
 import org.springframework.boot.CommandLineRunner;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -17,6 +14,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+import java.util.Arrays;
 
 @Transactional
 @Component
@@ -24,15 +22,19 @@ public class Bootstrap implements CommandLineRunner {
 
     private final CursValuteRepository cursValuteRepository;
     private final ValuteRepository valuteRepository;
-    public final ValuteConverterHistoryRepository valuteConverterHistoryRepository;
+    private final ValuteConverterHistoryRepository valuteConverterHistoryRepository;
+    private final RoleRepository roleRepository;
+    private final UserRepository userRepository;
 
 
     public static final String DAILY_ASP = "http://www.cbr.ru/scripts/XML_daily.asp?date_req=16/10/2020";
 
-    public Bootstrap(CursValuteRepository cursValuteRepository, ValuteRepository valuteRepository, ValuteConverterHistoryRepository valuteConverterHistoryRepository) {
+    public Bootstrap(CursValuteRepository cursValuteRepository, ValuteRepository valuteRepository, ValuteConverterHistoryRepository valuteConverterHistoryRepository, RoleRepository roleRepository, UserRepository userRepository) {
         this.cursValuteRepository = cursValuteRepository;
         this.valuteRepository = valuteRepository;
         this.valuteConverterHistoryRepository = valuteConverterHistoryRepository;
+        this.roleRepository = roleRepository;
+        this.userRepository = userRepository;
     }
 
     @Override
@@ -60,14 +62,14 @@ public class Bootstrap implements CommandLineRunner {
                                 cursValute.setValue(valute.getValue());
                                 cursValute.setValute(valute);
 
-                                System.out.println(cursValute.toString());
+                                //System.out.println(cursValute.toString());
 
                                 valuteRepository.save(valute);
                                 cursValuteRepository.save(cursValute);
                 });
             }
 
-            System.out.println(cursValuteRepository.getCursValuteByDateAndValute_Id("20.10.2020", "R01060"));
+            //System.out.println(cursValuteRepository.getCursValuteByDateAndValute_Id("20.10.2020", "R01060"));
         }
         catch (JAXBException | MalformedURLException e) {
             e.printStackTrace();
@@ -75,11 +77,31 @@ public class Bootstrap implements CommandLineRunner {
     }
 
     public void mockData() {
+        Role adminRole = new Role(2L, "ADMIN");
+        Role userRole = new Role(1L, "USER");
+
+        roleRepository.saveAll(Arrays.asList(adminRole, userRole));
+
+        User admin = new User();
+        admin.setId(1L);
+        admin.setPassword("qwerty");
+        admin.setPasswordConfirm("qwerty");
+        admin.getRoles().add(adminRole);
+        admin.setUsername("Admin");
+
+        userRepository.save(admin);
+
+        System.out.println(valuteConverterHistoryRepository.findAllByUser_Id(1L));
+
+
+        //System.out.println(roleRepository.findAll().toString());
+
         ValuteConverterHistory converterHistory = new ValuteConverterHistory();
         converterHistory.setInitialValute("первоначальная валюта");
         converterHistory.setGoalValute("целевая валюта");
         converterHistory.setInitialSum("35.535");
         converterHistory.setGoalSum("353355.59909");
+        converterHistory.setUser(userRepository.findByUsername("dindin"));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
         LocalDate localDateTo = LocalDate.parse("01.10.2020", formatter);
@@ -88,8 +110,8 @@ public class Bootstrap implements CommandLineRunner {
 
         valuteConverterHistoryRepository.save(converterHistory);
 
-        System.out.println(valuteConverterHistoryRepository
-                .findAllByQueryDateLessThanEqualAndQueryDateGreaterThanEqual(LocalDate.parse("20.10.2020", formatter),
-                        LocalDate.parse("15.10.2020", formatter)));
+        //System.out.println(valuteConverterHistoryRepository
+        //        .findAllByQueryDateLessThanEqualAndQueryDateGreaterThanEqual(LocalDate.parse("20.10.2020", formatter),
+        //                LocalDate.parse("15.10.2020", formatter)));
     }
 }

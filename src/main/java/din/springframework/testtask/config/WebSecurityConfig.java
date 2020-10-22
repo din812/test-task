@@ -1,6 +1,6 @@
 package din.springframework.testtask.config;
 
-import din.springframework.testtask.services.UserService;
+import din.springframework.testtask.services.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -14,11 +14,14 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    private final UserService userService;
+    /*private final UserService userService;
 
     public WebSecurityConfig(UserService userService) {
         this.userService = userService;
-    }
+    }*/
+
+    @Autowired
+    UserServiceImpl userServiceImpl;
 
     @Bean
     public BCryptPasswordEncoder bCryptPasswordEncoder() {
@@ -34,18 +37,19 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //Доступ только для не зарегистрированных пользователей
                 .antMatchers("/registration").not().fullyAuthenticated()
                 //Доступ только для пользователей с ролью Администратор
-                .antMatchers("/admin/**").hasRole("ADMIN")
-                .antMatchers("/news").hasRole("USER")
+                .antMatchers("/admin/**").hasAuthority("ADMIN")
+                .antMatchers("/converter").hasAuthority("USER")
                 //Доступ разрешен всем пользователей
-                .antMatchers("/", "/resources/**").permitAll()
+                .antMatchers("/", "/index", "/resources/**", "/css/**").permitAll()
                 //Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated()
                 .and()
                 //Настройка для входа в систему
                 .formLogin()
                 .loginPage("/login")
+                .failureUrl("/login-error")
                 //Перенарпавление на главную страницу после успешного входа
-                .defaultSuccessUrl("/")
+                .defaultSuccessUrl("/index")
                 .permitAll()
                 .and()
                 .logout()
@@ -55,6 +59,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userService).passwordEncoder(bCryptPasswordEncoder());
+        auth.userDetailsService(userServiceImpl).passwordEncoder(bCryptPasswordEncoder());
     }
 }

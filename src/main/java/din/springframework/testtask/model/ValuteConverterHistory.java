@@ -1,14 +1,8 @@
 package din.springframework.testtask.model;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
 import java.sql.Date;
 import java.time.LocalDate;
 import java.util.UUID;
@@ -16,6 +10,7 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@EqualsAndHashCode(exclude = "user")
 @Builder
 @Entity
 public class ValuteConverterHistory {
@@ -31,6 +26,10 @@ public class ValuteConverterHistory {
     private String initialSum;
 
     private String goalSum;
+
+    @ManyToOne
+    @JoinColumn(name = "id")
+    private User user;
 
     @Column(columnDefinition = "DATE")
     private LocalDate queryDate;

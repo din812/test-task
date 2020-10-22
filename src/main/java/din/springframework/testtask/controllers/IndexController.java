@@ -9,19 +9,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class IndexController {
 
-    @RequestMapping("/")
+    @RequestMapping({"/index", "/"})
     public String root() {
-        return "redirect:/index";
-    }
-
-    @RequestMapping("/index")
-    public String index() {
         return "index";
     }
 
-    @RequestMapping("/user/index")
-    public String userIndex() {
-        return "user/index";
+    @GetMapping("/converter")
+    public String converter() {
+        return "converter";
     }
 
     @RequestMapping("/login")
@@ -29,8 +24,7 @@ public class IndexController {
         return "login";
     }
 
-
-
+    // Login form with error
     @RequestMapping("/login-error")
     public String loginError(Model model) {
         model.addAttribute("loginError", true);

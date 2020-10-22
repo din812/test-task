@@ -1,7 +1,7 @@
 package din.springframework.testtask.controllers;
 
 import din.springframework.testtask.model.User;
-import din.springframework.testtask.services.UserService;
+import din.springframework.testtask.services.UserServiceImpl;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -14,10 +14,10 @@ import javax.validation.Valid;
 @Controller
 public class RegistrationController {
 
-    private final UserService userService;
+    private final UserServiceImpl userServiceImpl;
 
-    public RegistrationController(UserService userService) {
-        this.userService = userService;
+    public RegistrationController(UserServiceImpl userServiceImpl) {
+        this.userServiceImpl = userServiceImpl;
     }
 
     @GetMapping("/registration")
@@ -37,7 +37,7 @@ public class RegistrationController {
             model.addAttribute("passwordError", "Пароли не совпадают");
             return "registration";
         }
-        if (!userService.saveUser(userForm)){
+        if (!userServiceImpl.saveUser(userForm)){
             model.addAttribute("usernameError", "Пользователь с таким именем уже существует");
             return "registration";
         }
