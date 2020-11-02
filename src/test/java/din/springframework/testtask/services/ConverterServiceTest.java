@@ -48,17 +48,17 @@ class ConverterServiceTest {
         role.getUsers().add(user);
 
         ExchangeRate iniCurrency = new ExchangeRate();
-        iniCurrency.setValue("90.4489");
-        iniCurrency.setNominal("1");
+        iniCurrency.setValue("82.7782");
+        iniCurrency.setNominal("10");
 
         ExchangeRate goalCurrency = new ExchangeRate();
-        goalCurrency.setValue("76.4443");
-        goalCurrency.setNominal("1");
+        goalCurrency.setValue("73.7917");
+        goalCurrency.setNominal("10000");
 
         when(exchangeRateService.findFirstByCurrency_IdOrderByDateDesc("R01235")).thenReturn(iniCurrency);
         when(exchangeRateService.findFirstByCurrency_IdOrderByDateDesc("R01239")).thenReturn(goalCurrency);
 
-        String result = converterService.convert("R01235", "R01239", new BigDecimal("39"),
+        String result = converterService.convert("R01235", "R01239", new BigDecimal("16"),
                                                                                                                   user);
 
         System.out.println(result);

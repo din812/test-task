@@ -31,6 +31,8 @@ public class ConverterService {
      * nominal, so we have to do "value / nominal" to get it). When we exchange INITIAL currency for rubles and when
      * exchange rubles for our GOAL currency. The reason for this is because CRB.RU doesn't provide exchange rates
      * between every currency and the only option i though of was "INITIAL CURRENCY -> RUBLES -> GOAL CURRENCY".
+     * Used BigDecimal with RoundingMode.HALF_EVEN, but CRB.RU uses different one, not wasting time on figuring this
+     * one out, a lot of stackoverflow posts recommend HALF_EVEN for currency.
      * @param iniCurrencyId  ID of "initial" currency which will be converted FROM.
      * @param goalCurrencyId ID of "goal" currency which will be converted TO.
      * @param iniValue  value of converted currency.
@@ -66,9 +68,8 @@ public class ConverterService {
 
         BigDecimal valueInRubles = iniValue.multiply(IniValExchangeRateToRubles);
 
-        BigDecimal valueInGoalCurrency = BigDecimal.ONE.compareTo(exchangeRateFromRUBToGoalVal) >= 0?
-                valueInRubles.multiply(exchangeRateFromRUBToGoalVal) :
-                valueInRubles.divide(exchangeRateFromRUBToGoalVal, 4, RoundingMode.HALF_EVEN);
+        BigDecimal valueInGoalCurrency = valueInRubles.divide(exchangeRateFromRUBToGoalVal, 4,
+                                                                                                RoundingMode.HALF_EVEN);
 
         saveHistoryInDB(iniCurrencyId, goalCurrencyId, iniValue, valueInGoalCurrency, user);
 

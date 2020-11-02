@@ -33,11 +33,11 @@ public class ConverterController {
 
 
     @GetMapping("/converter")
-    public String converterIndex(Model model, @Qualifier("currencyList")  Pageable pageable,
+    public String converterIndex(Model model,
                                  @Qualifier("userHistory") Pageable pageableHistory,
                                  @AuthenticationPrincipal UserDetails currentUser) {
         User user = (User) userService.findByUsername(currentUser.getUsername());
-        model.addAttribute("currencyList", currencyService.findAll(pageable));
+        model.addAttribute("currencyList", currencyService.findAll());
         model.addAttribute("userHistory",
                 historyService.findAllByUserIdOrderByQueryDateDescUuidDescInitialSumDesc(user.getId(),
                         pageableHistory));
@@ -51,6 +51,10 @@ public class ConverterController {
                           @AuthenticationPrincipal UserDetails currentUser,
                           Model model, @Qualifier("userHistory") Pageable pageableHistory) {
         User user = (User) userService.findByUsername(currentUser.getUsername());
+        model.addAttribute("currencyList", currencyService.findAll());
+        model.addAttribute("initialCurrencyId", iniCurrencyId);
+        model.addAttribute("goalCurrencyId", goalCurrencyId);
+        model.addAttribute("initialValue", iniValue);
         try {
             model.addAttribute("goalValue", converterService.convert(iniCurrencyId, goalCurrencyId,
                                                                                 new BigDecimal(iniValue), user));

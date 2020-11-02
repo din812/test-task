@@ -13,21 +13,23 @@
         <label for="initialCurrencyId"></label>
         <select class="form-control" id="initialCurrencyId" name="initialCurrencyId">
         <option value="">Выберете исходную валюту</option>
-        <option th:each="valute : ${currencyList}"
-                th:value="${valute.id}"
-                th:text="${valute.charCode}+' ('+${valute.name} + ')'"></option>
+        <option th:each="currency : ${currencyList}"
+                th:value="${currency.id}"
+                th:text="${currency.charCode}+' ('+${currency.name} + ')'"
+                th:selected="${currency.id.equals(initialCurrencyId)}"></option>
     </select>
 
         <label for="goalCurrencyId"></label>
         <select class="form-control" id="goalCurrencyId" name="goalCurrencyId">
         <option value="">Выберете итоговую валюту</option>
-        <option th:each="valute : ${currencyList}"
-                th:value="${valute.id}"
-                th:text="${valute.charCode}+' ('+${valute.name} + ')'"></option>
+        <option th:each="currency : ${currencyList}"
+                th:value="${currency.id}"
+                th:text="${currency.charCode}+' ('+${currency.name} + ')'"
+                th:selected="${currency.id.equals(goalCurrencyId)}"></option>
     </select>
         <br/>
         <label>
-            <input type="text" name="initialValue"/>
+            <input type="text" name="initialValue" th:value="${initialValue}"/>
         </label>
         <input type="submit" value="Конвертировать.">
         <label>
