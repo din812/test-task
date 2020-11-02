@@ -1,0 +1,45 @@
+package din.springframework.testtask.model;
+
+import lombok.*;
+
+import javax.persistence.*;
+import java.time.LocalDate;
+import java.util.UUID;
+
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
+@EqualsAndHashCode(exclude = "user")
+@Builder
+@Entity
+public class CurrencyConverterHistory {
+
+    @Id
+    @GeneratedValue
+    private UUID uuid;
+
+    private String initialCurrency;
+
+    private String goalCurrency;
+
+    private String initialSum;
+
+    private String goalSum;
+
+    @ManyToOne
+    @JoinColumn(name = "id")
+    private User user;
+
+    @Column(columnDefinition = "DATE")
+    private LocalDate queryDate;
+
+    public CurrencyConverterHistory(String initialCurrency, String goalCurrency, String initialSum,
+                                                                    String goalSum, User user, LocalDate queryDate) {
+        this.initialCurrency = initialCurrency;
+        this.goalCurrency = goalCurrency;
+        this.initialSum = initialSum;
+        this.goalSum = goalSum;
+        this.user = user;
+        this.queryDate = queryDate;
+    }
+}

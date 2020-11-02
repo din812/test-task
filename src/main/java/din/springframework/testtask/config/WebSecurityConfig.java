@@ -14,9 +14,12 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 @EnableWebSecurity
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
-    /*private final UserService userService;
+    /**
+     * Doesn't work like this, context forms a cycle
+     */
+    /*private final UserServiceImpl userService;
 
-    public WebSecurityConfig(UserService userService) {
+    public WebSecurityConfig(UserServiceImpl userService) {
         this.userService = userService;
     }*/
 
@@ -37,10 +40,9 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 //Доступ только для не зарегистрированных пользователей
                 .antMatchers("/registration").not().fullyAuthenticated()
                 //Доступ только для пользователей с ролью Администратор
-                .antMatchers("/admin/**").hasAuthority("ADMIN")
-                .antMatchers("/converter").hasAuthority("USER")
+                .antMatchers("/admin").hasAuthority("ADMIN")
                 //Доступ разрешен всем пользователей
-                .antMatchers("/", "/index", "/resources/**", "/css/**").permitAll()
+                .antMatchers("/", "/index", "/resources/**", "/css/**", "/converter").permitAll()
                 //Все остальные страницы требуют аутентификации
                 .anyRequest().authenticated()
                 .and()
@@ -59,6 +61,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     protected void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
-        auth.userDetailsService(userServiceImpl).passwordEncoder(bCryptPasswordEncoder());
+        auth
+            .userDetailsService(userServiceImpl)
+            .passwordEncoder(bCryptPasswordEncoder());
     }
 }

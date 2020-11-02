@@ -22,14 +22,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     @PersistenceContext
     private EntityManager em;
 
-    /*@Autowired
-    UserRepository userRepository;
-    @Autowired
-    RoleRepository roleRepository;
-    @Autowired
-    BCryptPasswordEncoder bCryptPasswordEncoder;
-*/
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final BCryptPasswordEncoder bCryptPasswordEncoder;
@@ -83,13 +75,17 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     public List<User> getUserList(Long idMin) {
         return em.createQuery("SELECT u FROM User u WHERE u.id > :paramId", User.class)
-                .setParameter("paramId", idMin).getResultList();
+                .setParameter("paramId", idMin)
+                .getResultList();
     }
 
     @Override
     public User findByUsername(String username) {
         List<User> users = (List<User>) userRepository.findAll();
-        return users.stream().filter(user -> user.getUsername().equals(username)).findFirst().orElse(null);
+        return users.stream()
+                .filter(user -> user.getUsername().equals(username))
+                .findFirst()
+                .orElse(null);
     }
 
     @Override

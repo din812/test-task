@@ -1,36 +1,33 @@
 package din.springframework.testtask.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 
 import javax.persistence.*;
-import java.math.BigDecimal;
-import java.util.List;
-import java.util.Set;
+import java.time.LocalDate;
 import java.util.UUID;
 
 @Data
 @Entity(name = "Foreign_Currency_Market")
 @Table(uniqueConstraints = @UniqueConstraint(columnNames = {"date", "nominal", "value"}))
-public class CursValute {
+public class ExchangeRate {
 
     @Id
     @GeneratedValue
     private UUID uuid;
 
-    private String date;
-
-    //private String numCode;
-
-    //private String charCode;
+    @Column(columnDefinition = "DATE")
+    private LocalDate date;
 
     private String nominal;
 
-    //private String name;
-
     private String value;
 
+    @EqualsAndHashCode.Exclude
+    @ToString.Exclude
     @ManyToOne
-    @JoinColumn(name="valute_id")
-    private Valute valute;
+    @JoinColumn(name= "currency_id")
+    private Currency currency;
 
 }

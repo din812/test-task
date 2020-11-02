@@ -1,6 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
     <title>Converter</title>
     <meta charset="utf-8" />
@@ -9,6 +8,51 @@
 <body>
 <div th:substituteby="index::logout"></div>
 <div th:substituteby="index::notleggedin"></div>
-<h4><a href="/converter">Новости (только пользователь)</a></h4>
+<div class="converter-menu">
+    <form action="#" th:action="@{/converter}" method="POST">
+        <label for="initialCurrencyId"></label>
+        <select class="form-control" id="initialCurrencyId" name="initialCurrencyId">
+        <option value="">Выберете исходную валюту</option>
+        <option th:each="valute : ${currencyList}"
+                th:value="${valute.id}"
+                th:text="${valute.charCode}+' ('+${valute.name} + ')'"></option>
+    </select>
+
+        <label for="goalCurrencyId"></label>
+        <select class="form-control" id="goalCurrencyId" name="goalCurrencyId">
+        <option value="">Выберете итоговую валюту</option>
+        <option th:each="valute : ${currencyList}"
+                th:value="${valute.id}"
+                th:text="${valute.charCode}+' ('+${valute.name} + ')'"></option>
+    </select>
+        <br/>
+        <label>
+            <input type="text" name="initialValue"/>
+        </label>
+        <input type="submit" value="Конвертировать.">
+        <label>
+            <input type="text" name="goalValue" th:value="${goalValue}" th:readonly="${true}"/>
+        </label>
+        <p th:if="${requestError}" class="error">Проверьте введенное количество валюты.</p>
+    </form>
+</div>
+<div class="convert-history">
+        <table th:if="${userHistory.hasContent()}">
+            <tr>
+                <th>Дата запроса</th>
+                <th>Первоначальная валюта</th>
+                <th>Первоначальное сумма</th>
+                <th>Итогавая валюта</th>
+                <th>Итогавая сумма</th>
+            </tr>
+            <tr th:each="history : ${userHistory.content}">
+                <td th:text="${history.queryDate}"></td>
+                <td th:text="${history.initialCurrency}"></td>
+                <td th:text="${history.initialSum}"></td>
+                <td th:text="${history.goalCurrency}"></td>
+                <td th:text="${history.goalSum}"></td>
+            </tr>
+        </table>
+</div>
 </body>
 </html>

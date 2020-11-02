@@ -12,3 +12,9 @@ p.error {
 div.logout {
     float: right;
 }
+div.pagination-div-history {
+    color: black;
+    background: cornsilk;
+    outline-style: double;
+    display: inline-block;
+}

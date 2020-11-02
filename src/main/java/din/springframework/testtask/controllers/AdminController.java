@@ -2,7 +2,7 @@ package din.springframework.testtask.controllers;
 
 import din.springframework.testtask.model.User;
 import din.springframework.testtask.services.UserServiceImpl;
-import din.springframework.testtask.services.ValuteConverterHistoryServiceImpl;
+import din.springframework.testtask.services.CurrencyConverterHistoryServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
@@ -16,15 +16,16 @@ import org.springframework.web.bind.annotation.*;
 public class AdminController {
 
     private final UserServiceImpl userServiceImpl;
-    private final ValuteConverterHistoryServiceImpl historyService;
+    private final CurrencyConverterHistoryServiceImpl historyService;
 
-    public AdminController(UserServiceImpl userServiceImpl, ValuteConverterHistoryServiceImpl historyService) {
+    public AdminController(UserServiceImpl userServiceImpl, CurrencyConverterHistoryServiceImpl historyService) {
         this.userServiceImpl = userServiceImpl;
         this.historyService = historyService;
     }
 
     @GetMapping("/admin")
-    public String userList(@PageableDefault(size = 1) @Qualifier("allUsersPage") Pageable pageableUsers, Model model) {
+    public String userList(@PageableDefault(sort = "id") @Qualifier("allUsersPage") Pageable pageableUsers,
+                                                                                                        Model model) {
         model.addAttribute("allUsersPage", userServiceImpl.findAll(pageableUsers));
         return "admin";
     }
@@ -40,8 +41,8 @@ public class AdminController {
     }
 
     @GetMapping("/admin/get/")
-    public String  getUser(@PageableDefault(size = 3) @Qualifier("allUsersPage") Pageable pageableUsers,
-                           @Qualifier("userHistory") Pageable pageableHistory,
+    public String  getUser(@Qualifier("userHistory") Pageable pageableHistory,
+                           @PageableDefault(sort = "id") @Qualifier("allUsersPage") Pageable pageableUsers,
                            @ModelAttribute("userId") String userId, Model model) {
         model.addAttribute("allUsersPage", userServiceImpl.findAll(pageableUsers));
         try {
@@ -52,8 +53,8 @@ public class AdminController {
             } else {
                 model.addAttribute("user", userFound);
                 model.addAttribute("userHistory",
-                        historyService.findAllByUserIdOrderByUuid(Long.valueOf(userId), pageableHistory));
-                System.out.println(pageableHistory.getPageSize());
+                        historyService.findAllByUserIdOrderByQueryDateDescUuidDescInitialSumDesc(Long.valueOf(userId),
+                                                                                                    pageableHistory));
             }
         } catch (NumberFormatException e) {
             model.addAttribute("requestError", true);

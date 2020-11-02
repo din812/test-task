@@ -1,7 +1,6 @@
 package din.springframework.testtask.model;
 
 import lombok.*;
-import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.*;
 import javax.xml.bind.annotation.*;
@@ -12,18 +11,12 @@ import java.util.Set;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@EqualsAndHashCode(exclude = {"valcurs"})
+@EqualsAndHashCode(exclude = {"valcurs", "exchangeRate", "nominal"})
 @Builder
 @XmlAccessorType(XmlAccessType.FIELD)
 @Entity
-@XmlType(name = "Valute"/*, propOrder = {
-        "id",
-        "numCode",
-        "charCode",
-        "nominal",
-        "name",
-        "value"}*/)
-public class Valute implements Serializable {
+@XmlType(name = "Currency")
+public class Currency implements Serializable {
 
     @XmlElement(name = "NumCode", required = true)
     private String numCode;
@@ -31,6 +24,7 @@ public class Valute implements Serializable {
     @XmlElement(name = "CharCode", required = true)
     private String charCode;
 
+    @ToString.Exclude
     @Transient
     @XmlElement(name = "Nominal", required = true)
     private String nominal;
@@ -38,28 +32,21 @@ public class Valute implements Serializable {
     @XmlElement(name = "Name", required = true)
     private String name;
 
+    @ToString.Exclude
     @Transient
     @XmlElement(name = "Value", required = true)
     private String value;
 
     @Id
     @XmlAttribute(name = "ID")
-    @Column(name = "valute_id")
+    @Column(name = "currency_id")
     private String id;
 
+    @ToString.Exclude
     @Transient
     private ValCurs valcurs;
 
-    @OneToMany(mappedBy = "valute")
-    private Set<CursValute> cursValute;
-
-    @Override
-    public String toString() {
-        return "\n Valute{" +
-                "numCode='" + numCode + '\'' +
-                ", charCode='" + charCode + '\'' +
-                ", name='" + name + '\'' +
-                ", id='" + id + '\'' +
-                '}';
-    }
+    @ToString.Exclude
+    @OneToMany(mappedBy = "currency")
+    private Set<ExchangeRate> exchangeRate;
 }

@@ -23,7 +23,7 @@
         </form>
     </div>
 </div>
-<div th:fragment="notleggedin" class="notleggedin" sec:authorize="!isAuthenticated()">
+<div th:fragment="notleggedin" class="notLoggedIn" sec:authorize="!isAuthenticated()">
     <div>
         <h4><a href="/login">Войти</a></h4>
         <h4><a href="/registration">Зарегистрироватся</a></h4>

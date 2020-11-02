@@ -25,23 +25,26 @@
         <p>Username: <a th:text="${user.username}"></a></p>
         <p>Roles: <a th:text="${user.getAuthorities()}"></a></p>
 
-        <table>
-            <tr>
-                <th>Дата запроса</th>
-                <th>Первоначальная валюта</th>
-                <th>Первоначальное сумма</th>
-                <th>Итогавая валюта</th>
-                <th>Итогавая сумма</th>
-            </tr>
-            <tr th:each="history : ${user.getConverterHistories()}">
-                <td th:text="${history.queryDate}"></td>
-                <td th:text="${history.initialValute}"></td>
-                <td th:text="${history.initialSum}"></td>
-                <td th:text="${history.goalValute}"></td>
-                <td th:text="${history.goalSum}"></td>
-            </tr>
-        </table>
-        <div class="pagination-div-history">
+        <div th:switch="${userHistory.content.isEmpty()}">
+            <table th:case="${false}">
+             <tr>
+                    <th>Дата запроса</th>
+                    <th>Первоначальная валюта</th>
+                    <th>Первоначальное сумма</th>
+                    <th>Итогавая валюта</th>
+                     <th>Итогавая сумма</th>
+                </tr>
+                <tr th:each="history : ${userHistory.content}">
+                    <td th:text="${history.queryDate}"></td>
+                    <td th:text="${history.initialCurrency}"></td>
+                    <td th:text="${history.initialSum}"></td>
+                    <td th:text="${history.goalCurrency}"></td>
+                    <td th:text="${history.goalSum}"></td>
+                </tr>
+            </table>
+            <b th:case="${true}">Пользователь еще не использовал конвертер валют.</b>
+        </div>
+        <div th:if="${!userHistory.content.isEmpty()}" class="pagination-div-history">
     <span th:if="${userHistory.hasPrevious()}">
         <a th:href="@{/admin/get/(userId=${userId}, userHistory_page=${userHistory.number-1},
                                                                 userHistory_size=${userHistory.size})}">Previous</a>

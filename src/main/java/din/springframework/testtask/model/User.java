@@ -1,7 +1,6 @@
 package din.springframework.testtask.model;
 
 import lombok.*;
-import org.assertj.core.internal.bytebuddy.build.HashCodeAndEqualsPlugin;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -36,7 +35,7 @@ public class User implements UserDetails {
     private Set<Role> roles = new HashSet<>();
 
     @OneToMany(mappedBy = "user")
-    private Set<ValuteConverterHistory> converterHistories;
+    private Set<CurrencyConverterHistory> converterHistories;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
