@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>Login page</title>
+    <title>Страница регистрации</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../static/css/main.css" th:href="@{/css/main.css}" />
 </head>
@@ -10,17 +10,17 @@
     <h2>Регистрация</h2>
     <div>
         <label>
-            <input type="text" th:field="*{username}" placeholder="Username" autofocus="true"/>
+            <input type="text" th:field="*{username}" placeholder="Логин" autofocus="true"/>
         </label>
     </div>
     <div>
         <label>
-            <input type="text" th:field="*{password}" placeholder="Password"/>
+            <input type="text" th:field="*{password}" placeholder="Пароль"/>
         </label>
     </div>
     <div>
         <label>
-            <input type="text" th:field="*{passwordConfirm}" placeholder="Confirm password"/>
+            <input type="text" th:field="*{passwordConfirm}" placeholder="Подтвердите пароль"/>
         </label>
     </div>
     <button type="submit">Зарегистрироваться</button>

@@ -7,6 +7,7 @@ import din.springframework.testtask.services.CurrencyConverterHistoryServiceImpl
 import din.springframework.testtask.services.CurrencyServiceImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
@@ -34,7 +35,7 @@ public class ConverterController {
 
     @GetMapping("/converter")
     public String converterIndex(Model model,
-                                 @Qualifier("userHistory") Pageable pageableHistory,
+                                 @Qualifier("userHistory") @PageableDefault(size = 5) Pageable pageableHistory,
                                  @AuthenticationPrincipal UserDetails currentUser) {
         User user = (User) userService.findByUsername(currentUser.getUsername());
         model.addAttribute("currencyList", currencyService.findAll());
@@ -49,7 +50,7 @@ public class ConverterController {
                           @RequestParam("goalCurrencyId") String goalCurrencyId,
                           @RequestParam("initialValue") String iniValue,
                           @AuthenticationPrincipal UserDetails currentUser,
-                          Model model, @Qualifier("userHistory") Pageable pageableHistory) {
+                          Model model, @Qualifier("userHistory") @PageableDefault(size = 5) Pageable pageableHistory) {
         User user = (User) userService.findByUsername(currentUser.getUsername());
         model.addAttribute("currencyList", currencyService.findAll());
         model.addAttribute("initialCurrencyId", iniCurrencyId);

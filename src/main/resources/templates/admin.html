@@ -1,8 +1,7 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
-    <title>Admin page</title>
+    <title>Страница администратора</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../static/css/main.css" th:href="@{/css/main.css}" />
 </head>
@@ -31,8 +30,8 @@
                     <th>Дата запроса</th>
                     <th>Первоначальная валюта</th>
                     <th>Первоначальное сумма</th>
-                    <th>Итогавая валюта</th>
-                     <th>Итогавая сумма</th>
+                    <th>Итоговая валюта</th>
+                    <th>Итоговая сумма</th>
                 </tr>
                 <tr th:each="history : ${userHistory.content}">
                     <td th:text="${history.queryDate}"></td>
@@ -66,8 +65,8 @@
 <h3>Список всех пользователей</h3>
 <table>
     <tr><th>ID</th>
-        <th>Username</th>
-        <th>№ запросов</th>
+        <th>Логин</th>
+        <th>Количество запросов</th>
     </tr>
     <tr th:each="user : ${allUsersPage.content}">
         <td th:text="${user.id}"></td>
@@ -77,7 +76,8 @@
 </table>
 <div class="pagination-div">
     <span th:if="${allUsersPage.hasPrevious()}">
-        <a th:href="@{/admin/(allUsersPage_page=${allUsersPage.number-1},allUsersPage_size=${allUsersPage.size})}">Previous</a>
+        <a th:href="@{/admin/(allUsersPage_page=${allUsersPage.number-1},allUsersPage_size=${allUsersPage.size})}">
+                                                                                                        Пред идущая</a>
     </span>
     <th:block th:each="i: ${#numbers.sequence(0, allUsersPage.totalPages - 1)}">
         <span th:if="${allUsersPage.number == i}" class="selected">[[${i}+1]]</span>
@@ -86,7 +86,8 @@
         </span>
     </th:block>
     <span th:if="${allUsersPage.hasNext()}">
-        <a th:href="@{/admin/(allUsersPage_page=${allUsersPage.number+1},allUsersPage_size=${allUsersPage.size})}">Next</a>
+        <a th:href="@{/admin/(allUsersPage_page=${allUsersPage.number+1},allUsersPage_size=${allUsersPage.size})}">
+                                                                                                           Следующая</a>
     </span>
 </div>
 </body>
