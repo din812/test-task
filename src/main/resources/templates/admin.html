@@ -34,7 +34,7 @@
                     <th>Итоговая сумма</th>
                 </tr>
                 <tr th:each="history : ${userHistory.content}">
-                    <td th:text="${history.queryDate}"></td>
+                    <td th:text="${#temporals.format(history.queryDate, 'dd-MM-yyyy HH:mm')}"></td>
                     <!-- Показалось самым простым способом занести нормальные названия в таблицу, не добавляя мусор в БД и
                     не добавлять лишние связи и т.п. в коде, не думаю что итерация по 30 строкам будет сильно нагружать -->
                     <th:block th:each="currency : ${currencyList}">
