@@ -38,7 +38,9 @@
         <p th:if="${requestError}" class="error">Проверьте введенное количество валюты.</p>
     </form>
 </div>
-<div class="convert-history">
+<br>
+<a>Последние 5 конвертаций.</a>
+<div class="convert-history" >
         <table th:if="${userHistory.hasContent()}">
             <tr>
                 <th>Дата запроса</th>
@@ -49,12 +51,26 @@
             </tr>
             <tr th:each="history : ${userHistory.content}">
                 <td th:text="${history.queryDate}"></td>
-                <td th:text="${history.initialCurrency}"></td>
+                <!-- Показалось самым простым способом занести нормальные названия в таблицу, не добавляя мусор в БД и
+                не добавлять лишние связи и т.п. в коде, не думаю что итерация по 30 строкам будет сильно нагружать -->
+                <th:block th:each="currency : ${currencyList}">
+                    <a th:if="${currency.id.equals(history.initialCurrency)}">
+                        <td th:text="${currency.charCode}+' ('+${currency.name} + ')'"></td>
+                    </a>
+                </th:block>
                 <td th:text="${history.initialSum}"></td>
-                <td th:text="${history.goalCurrency}"></td>
+                <th:block th:each="currency : ${currencyList}">
+                    <a th:if="${currency.id.equals(history.goalCurrency)}">
+                        <td th:text="${currency.charCode}+' ('+${currency.name} + ')'"></td>
+                    </a>
+                </th:block>
                 <td th:text="${history.goalSum}"></td>
             </tr>
         </table>
 </div>
+
+<form action="/converter-history">
+    <input type="submit" value="Ваша полная история конвертаций." />
+</form>
 </body>
 </html>

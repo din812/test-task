@@ -35,9 +35,19 @@
                 </tr>
                 <tr th:each="history : ${userHistory.content}">
                     <td th:text="${history.queryDate}"></td>
-                    <td th:text="${history.initialCurrency}"></td>
+                    <!-- Показалось самым простым способом занести нормальные названия в таблицу, не добавляя мусор в БД и
+                    не добавлять лишние связи и т.п. в коде, не думаю что итерация по 30 строкам будет сильно нагружать -->
+                    <th:block th:each="currency : ${currencyList}">
+                        <a th:if="${currency.id.equals(history.initialCurrency)}">
+                            <td th:text="${currency.charCode}+' ('+${currency.name} + ')'"></td>
+                        </a>
+                    </th:block>
                     <td th:text="${history.initialSum}"></td>
-                    <td th:text="${history.goalCurrency}"></td>
+                    <th:block th:each="currency : ${currencyList}">
+                        <a th:if="${currency.id.equals(history.goalCurrency)}">
+                            <td th:text="${currency.charCode}+' ('+${currency.name} + ')'"></td>
+                        </a>
+                    </th:block>
                     <td th:text="${history.goalSum}"></td>
                 </tr>
             </table>

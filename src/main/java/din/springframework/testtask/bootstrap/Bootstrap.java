@@ -32,7 +32,7 @@ public class Bootstrap implements CommandLineRunner {
     @Override
     public void run(String... args) throws Exception {
         new DataSourceParser(exchangeRateRepository, currencyRepository); //pull today's data from CBR.ru site
-        mockData();
+        //mockData();
     }
 
     public void mockData() {

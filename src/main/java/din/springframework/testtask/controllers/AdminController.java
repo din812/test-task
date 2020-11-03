@@ -1,6 +1,8 @@
 package din.springframework.testtask.controllers;
 
+import din.springframework.testtask.model.Currency;
 import din.springframework.testtask.model.User;
+import din.springframework.testtask.services.CurrencyService;
 import din.springframework.testtask.services.UserServiceImpl;
 import din.springframework.testtask.services.CurrencyConverterHistoryServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -11,16 +13,25 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @Slf4j
 @Controller
 public class AdminController {
 
     private final UserServiceImpl userServiceImpl;
     private final CurrencyConverterHistoryServiceImpl historyService;
+    private final CurrencyService currencyService;
 
-    public AdminController(UserServiceImpl userServiceImpl, CurrencyConverterHistoryServiceImpl historyService) {
+    public AdminController(UserServiceImpl userServiceImpl, CurrencyConverterHistoryServiceImpl historyService, CurrencyService currencyService) {
         this.userServiceImpl = userServiceImpl;
         this.historyService = historyService;
+        this.currencyService = currencyService;
+    }
+
+    @ModelAttribute("currencyList")
+    public List<Currency> currencyList() {
+        return (List<Currency>) currencyService.findAll();
     }
 
     @GetMapping("/admin")
@@ -41,7 +52,7 @@ public class AdminController {
     }
 
     @GetMapping("/admin/get/")
-    public String  getUser(@Qualifier("userHistory") Pageable pageableHistory,
+    public String getUser(@Qualifier("userHistory") Pageable pageableHistory,
                            @PageableDefault(sort = "id") @Qualifier("allUsersPage") Pageable pageableUsers,
                            @ModelAttribute("userId") String userId, Model model) {
         model.addAttribute("allUsersPage", userServiceImpl.findAll(pageableUsers));

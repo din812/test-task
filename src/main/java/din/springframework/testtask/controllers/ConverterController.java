@@ -1,5 +1,6 @@
 package din.springframework.testtask.controllers;
 
+import din.springframework.testtask.model.Currency;
 import din.springframework.testtask.model.User;
 import din.springframework.testtask.services.ConverterService;
 import din.springframework.testtask.services.UserServiceImpl;
@@ -15,6 +16,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Controller
 public class ConverterController {
@@ -32,17 +34,31 @@ public class ConverterController {
         this.converterService = converterService;
     }
 
+    @ModelAttribute("currencyList")
+    public List<Currency> currencyList() {
+        return (List<Currency>) currencyService.findAll();
+    }
 
     @GetMapping("/converter")
     public String converterIndex(Model model,
                                  @Qualifier("userHistory") @PageableDefault(size = 5) Pageable pageableHistory,
                                  @AuthenticationPrincipal UserDetails currentUser) {
         User user = (User) userService.findByUsername(currentUser.getUsername());
-        model.addAttribute("currencyList", currencyService.findAll());
         model.addAttribute("userHistory",
                 historyService.findAllByUserIdOrderByQueryDateDescUuidDescInitialSumDesc(user.getId(),
                         pageableHistory));
         return "converter";
+    }
+
+    @GetMapping("/converter-history")
+    public String converterHistory(Model model,
+                                 @Qualifier("userHistory") Pageable pageableHistory,
+                                 @AuthenticationPrincipal UserDetails currentUser) {
+        User user = (User) userService.findByUsername(currentUser.getUsername());
+        model.addAttribute("userHistory",
+                historyService.findAllByUserIdOrderByQueryDateDescUuidDescInitialSumDesc(user.getId(),
+                        pageableHistory));
+        return "converter-history";
     }
 
     @PostMapping("/converter")
@@ -52,7 +68,6 @@ public class ConverterController {
                           @AuthenticationPrincipal UserDetails currentUser,
                           Model model, @Qualifier("userHistory") @PageableDefault(size = 5) Pageable pageableHistory) {
         User user = (User) userService.findByUsername(currentUser.getUsername());
-        model.addAttribute("currencyList", currencyService.findAll());
         model.addAttribute("initialCurrencyId", iniCurrencyId);
         model.addAttribute("goalCurrencyId", goalCurrencyId);
         model.addAttribute("initialValue", iniValue);

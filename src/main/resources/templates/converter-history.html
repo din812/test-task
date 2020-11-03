@@ -9,13 +9,7 @@
 <div th:substituteby="index::logout"></div>
 <div th:substituteby="index::notleggedin"></div>
 <h4><a href="/converter">Конвертер валюты</a></h4>
-
-<div th:if="${user != null && user.id != null}">
-    <p>Id: <a th:text="${user.id}"></a></p>
-    <p>Username: <a th:text="${user.username}"></a></p>
-    <p>Roles: <a th:text="${user.getAuthorities()}"></a></p>
-
-    <div th:switch="${userHistory.content.isEmpty()}">
+<div th:switch="${userHistory.content.isEmpty()}">
         <table th:case="${false}">
             <tr>
                 <th>Дата запроса</th>
@@ -26,31 +20,40 @@
             </tr>
             <tr th:each="history : ${userHistory.content}">
                 <td th:text="${history.queryDate}"></td>
-                <td th:text="${history.initialCurrency}"></td>
+                <!-- Показалось самым простым способом занести нормальные названия в таблицу, не добавляя мусор в БД и
+                не добавлять лишние связи и т.п. в коде, не думаю что итерация по 30 строкам будет сильно нагружать -->
+                <th:block th:each="currency : ${currencyList}">
+                     <a th:if="${currency.id.equals(history.initialCurrency)}">
+                         <td th:text="${currency.charCode}+' ('+${currency.name} + ')'"></td>
+                     </a>
+                </th:block>
                 <td th:text="${history.initialSum}"></td>
-                <td th:text="${history.goalCurrency}"></td>
+                <th:block th:each="currency : ${currencyList}">
+                    <a th:if="${currency.id.equals(history.goalCurrency)}">
+                        <td th:text="${currency.charCode}+' ('+${currency.name} + ')'"></td>
+                    </a>
+                </th:block>
                 <td th:text="${history.goalSum}"></td>
             </tr>
         </table>
         <b th:case="${true}">Вы еще не использовал конвертер валют.</b>
-    </div>
-    <div th:if="${!userHistory.content.isEmpty()}" class="pagination-div-history">
+</div>
+<div th:if="${!userHistory.content.isEmpty()}" class="pagination-div-history">
     <span th:if="${userHistory.hasPrevious()}">
-        <a th:href="@{/admin/get/(userId=${userId}, userHistory_page=${userHistory.number-1},
+        <a th:href="@{/converter-history/(userHistory_page=${userHistory.number-1},
                                                                 userHistory_size=${userHistory.size})}">Previous</a>
     </span>
         <th:block th:each="i: ${#numbers.sequence(0, userHistory.totalPages - 1)}">
             <span th:if="${userHistory.number == i}" class="selected">[[${i}+1]]</span>
             <span th:unless="${userHistory.number == i}">
-             <a th:href="@{/admin/get/(userId=${userId}, userHistory_page=${i},
+             <a th:href="@{/converter-history/(userHistory_page=${i},
                                                                 userHistory_size=${userHistory.size})}">[[${i}+1]]</a>
         </span>
         </th:block>
         <span th:if="${userHistory.hasNext()}">
-        <a th:href="@{/admin/get/(userId=${userId}, userHistory_page=${userHistory.number+1},
+        <a th:href="@{/converter-history/(userHistory_page=${userHistory.number+1},
                                                                 userHistory_size=${userHistory.size})}">Next</a>
     </span>
-    </div>
 </div>
 </body>
 </html>
