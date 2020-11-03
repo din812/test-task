@@ -1,12 +1,15 @@
 package din.springframework.testtask.controllers;
 
+import din.springframework.testtask.exceptions.ConvertException;
 import din.springframework.testtask.model.Currency;
+import din.springframework.testtask.model.CurrencyConverterHistory;
 import din.springframework.testtask.model.User;
 import din.springframework.testtask.services.ConverterService;
 import din.springframework.testtask.services.UserServiceImpl;
 import din.springframework.testtask.services.CurrencyConverterHistoryServiceImpl;
 import din.springframework.testtask.services.CurrencyServiceImpl;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -14,6 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.math.BigDecimal;
 import java.util.List;
@@ -39,25 +43,21 @@ public class ConverterController {
         return (List<Currency>) currencyService.findAll();
     }
 
-    @GetMapping("/converter")
-    public String converterIndex(Model model,
-                                 @Qualifier("userHistory") @PageableDefault(size = 5) Pageable pageableHistory,
-                                 @AuthenticationPrincipal UserDetails currentUser) {
+    @ModelAttribute("userHistory")
+    public Page<CurrencyConverterHistory> userHistory(@AuthenticationPrincipal UserDetails currentUser,
+                    @Qualifier("userHistory") @PageableDefault(size = 5, sort = "queryDate") Pageable pageableHistory) {
         User user = (User) userService.findByUsername(currentUser.getUsername());
-        model.addAttribute("userHistory",
-                historyService.findAllByUserIdOrderByQueryDateDescUuidDescInitialSumDesc(user.getId(),
-                        pageableHistory));
+        return historyService.findAllByUserIdOrderByQueryDateDescUuidDescInitialSumDesc(user.getId(),
+                        pageableHistory);
+    }
+
+    @GetMapping("/converter")
+    public String converterIndex() {
         return "converter";
     }
 
     @GetMapping("/converter-history")
-    public String converterHistory(Model model,
-                                 @Qualifier("userHistory") Pageable pageableHistory,
-                                 @AuthenticationPrincipal UserDetails currentUser) {
-        User user = (User) userService.findByUsername(currentUser.getUsername());
-        model.addAttribute("userHistory",
-                historyService.findAllByUserIdOrderByQueryDateDescUuidDescInitialSumDesc(user.getId(),
-                        pageableHistory));
+    public String converterHistory() {
         return "converter-history";
     }
 
@@ -66,21 +66,22 @@ public class ConverterController {
                           @RequestParam("goalCurrencyId") String goalCurrencyId,
                           @RequestParam("initialValue") String iniValue,
                           @AuthenticationPrincipal UserDetails currentUser,
-                          Model model, @Qualifier("userHistory") @PageableDefault(size = 5) Pageable pageableHistory) {
+                          RedirectAttributes attributes) {
+
         User user = (User) userService.findByUsername(currentUser.getUsername());
-        model.addAttribute("initialCurrencyId", iniCurrencyId);
-        model.addAttribute("goalCurrencyId", goalCurrencyId);
-        model.addAttribute("initialValue", iniValue);
+
+        attributes.addFlashAttribute("initialCurrencyId", iniCurrencyId);
+        attributes.addFlashAttribute("goalCurrencyId", goalCurrencyId);
+        attributes.addFlashAttribute("initialValue", iniValue);
         try {
-            model.addAttribute("goalValue", converterService.convert(iniCurrencyId, goalCurrencyId,
+            attributes.addFlashAttribute("goalValue", converterService.convert(iniCurrencyId, goalCurrencyId,
                                                                                 new BigDecimal(iniValue), user));
-            model.addAttribute("userHistory",
-                    historyService.findAllByUserIdOrderByQueryDateDescUuidDescInitialSumDesc(user.getId(),
-                            pageableHistory));
-        } catch (NumberFormatException e) {
-            model.addAttribute("requestError", true);
+        } catch (NumberFormatException | ConvertException e) {
+            attributes.addFlashAttribute("requestError", true);
         }
-        return "converter";
+
+
+        return "redirect:converter";
     }
 
 }

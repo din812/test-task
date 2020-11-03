@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
 
@@ -17,8 +18,8 @@ public interface CurrencyConverterHistoryRepository extends PagingAndSortingRepo
      * @param queryDate2 LocalDate to
      * @return Set<CurrencyConverterHistory>
      */
-    Set<CurrencyConverterHistory> findAllByQueryDateLessThanEqualAndQueryDateGreaterThanEqual(LocalDate queryDate,
-                                                                                              LocalDate queryDate2);
+    Set<CurrencyConverterHistory> findAllByQueryDateLessThanEqualAndQueryDateGreaterThanEqual(LocalDateTime queryDate,
+                                                                                              LocalDateTime queryDate2);
 
     Set<CurrencyConverterHistory> findAllByUser_Id(Long id);
 

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 
@@ -65,7 +66,7 @@ public class Bootstrap implements CommandLineRunner {
         converterHistory.setUser(userRepository.findByUsername("Admin"));
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
-        LocalDate localDateTo = LocalDate.parse("11.10.2020", formatter);
+        LocalDateTime localDateTo = LocalDateTime.parse("11.10.2020", formatter);
 
         converterHistory.setQueryDate(localDateTo);
 

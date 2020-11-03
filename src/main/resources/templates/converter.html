@@ -12,7 +12,7 @@
     <form action="#" th:action="@{/converter}" method="POST">
         <label for="initialCurrencyId"></label>
         <select class="form-control" id="initialCurrencyId" name="initialCurrencyId">
-        <option value="">Выберете исходную валюту</option>
+        <option value="0">Выберете исходную валюту</option>
         <option th:each="currency : ${currencyList}"
                 th:value="${currency.id}"
                 th:text="${currency.charCode}+' ('+${currency.name} + ')'"
@@ -21,7 +21,7 @@
 
         <label for="goalCurrencyId"></label>
         <select class="form-control" id="goalCurrencyId" name="goalCurrencyId">
-        <option value="">Выберете итоговую валюту</option>
+        <option value="0">Выберете итоговую валюту</option>
         <option th:each="currency : ${currencyList}"
                 th:value="${currency.id}"
                 th:text="${currency.charCode}+' ('+${currency.name} + ')'"
@@ -35,7 +35,7 @@
         <label>
             <input type="text" name="goalValue" th:value="${goalValue}" th:readonly="${true}"/>
         </label>
-        <p th:if="${requestError}" class="error">Проверьте введенное количество валюты.</p>
+        <p th:if="${requestError}" class="error">Проверьте введенное количество и саму валюту.</p>
     </form>
 </div>
 <br>

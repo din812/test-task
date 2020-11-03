@@ -1,5 +1,6 @@
 package din.springframework.testtask.services;
 
+import din.springframework.testtask.exceptions.ConvertException;
 import din.springframework.testtask.model.ExchangeRate;
 import din.springframework.testtask.model.Role;
 import din.springframework.testtask.model.User;
@@ -35,7 +36,7 @@ class ConverterServiceTest {
     }
 
     @Test
-    void convert() {
+    void convert() throws ConvertException {
         Role role = new Role();
         role.setId(5L);
         role.setName("TestRole");

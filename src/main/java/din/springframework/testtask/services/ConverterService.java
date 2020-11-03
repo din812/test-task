@@ -1,6 +1,7 @@
 package din.springframework.testtask.services;
 
 import din.springframework.testtask.bootstrap.DataSourceParser;
+import din.springframework.testtask.exceptions.ConvertException;
 import din.springframework.testtask.model.ExchangeRate;
 import din.springframework.testtask.model.User;
 import din.springframework.testtask.model.CurrencyConverterHistory;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 @Slf4j
 @Service
@@ -37,7 +39,7 @@ public class ConverterService {
      * @param goalCurrencyId ID of "goal" currency which will be converted TO.
      * @param iniValue  value of converted currency.
      */
-    public String convert(String iniCurrencyId, String goalCurrencyId, BigDecimal iniValue, User user) {
+    public String convert(String iniCurrencyId, String goalCurrencyId, BigDecimal iniValue, User user) throws ConvertException {
         LocalDate localDate = LocalDate.now();
 
         updateExchangeRateIfNeeded(localDate);
@@ -47,14 +49,14 @@ public class ConverterService {
 
         if (iniCurrency == null) {
             log.error("Initial currency for convert isn't present in DB!");
-            return "0";
+            throw new ConvertException();
         }
         if (goalCurrency == null) {
             log.error("Goal currency for convert isn't present in DB!");
-            return "0";
+            throw new ConvertException();
         }
         if (iniValue.compareTo(BigDecimal.ZERO) == 0) {
-            return "0";
+            throw new ConvertException();
         }
         BigDecimal bigIniValue = new BigDecimal(iniCurrency.getValue());
         BigDecimal bigIniNominal = new BigDecimal(iniCurrency.getNominal());
@@ -79,7 +81,7 @@ public class ConverterService {
     private void saveHistoryInDB(String iniCurrencyId, String goalCurrencyId, BigDecimal iniValue, BigDecimal goalValue,
                                                                                                         User user) {
         CurrencyConverterHistory convertHistory = new CurrencyConverterHistory();
-        convertHistory.setQueryDate(LocalDate.now());
+        convertHistory.setQueryDate(LocalDateTime.now());
         convertHistory.setInitialCurrency(iniCurrencyId);
         convertHistory.setGoalCurrency(goalCurrencyId);
         convertHistory.setInitialSum(String.valueOf(iniValue));

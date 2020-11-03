@@ -4,6 +4,7 @@ import lombok.*;
 
 import javax.persistence.*;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
@@ -30,11 +31,10 @@ public class CurrencyConverterHistory {
     @JoinColumn(name = "id")
     private User user;
 
-    @Column(columnDefinition = "DATE")
-    private LocalDate queryDate;
+    private LocalDateTime queryDate;
 
     public CurrencyConverterHistory(String initialCurrency, String goalCurrency, String initialSum,
-                                                                    String goalSum, User user, LocalDate queryDate) {
+                                                                   String goalSum, User user, LocalDateTime queryDate) {
         this.initialCurrency = initialCurrency;
         this.goalCurrency = goalCurrency;
         this.initialSum = initialSum;

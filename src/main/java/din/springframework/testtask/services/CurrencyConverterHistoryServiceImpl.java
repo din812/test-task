@@ -13,6 +13,7 @@ import org.springframework.lang.NonNullApi;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
@@ -31,7 +32,7 @@ public class CurrencyConverterHistoryServiceImpl implements CurrencyConverterHis
 
     @Override
     public Set<CurrencyConverterHistory>
-                findAllByQueryDateLessThanEqualAndQueryDateGreaterThanEqual(LocalDate queryDate, LocalDate queryDate2) {
+                findAllByQueryDateLessThanEqualAndQueryDateGreaterThanEqual(LocalDateTime queryDate, LocalDateTime queryDate2) {
         return currencyConverterHistoryRepository.findAllByQueryDateLessThanEqualAndQueryDateGreaterThanEqual(queryDate,
                 queryDate2);
     }
