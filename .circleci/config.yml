@@ -4,9 +4,6 @@ jobs:
   build:
     docker:
       - image circleci/openjdk:11.0.3-jdk-stretch
-        auth:
-          username: mydockerhub-user
-          password: $DOCKERHUB_PASSWORD  # context / project UI env-var reference
 workflows:
   maven_test:
     jobs:
