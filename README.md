@@ -14,7 +14,7 @@ tldr:
 ```
 
  Основные технологии: Spring MVC, Spring Security, Spring JPA, JUnit 5, Mockito, PostgreSQL, Lombok, Thymeleaf,
-Hibernate, JAXB.
+Hibernate, JAXB, Docker.
 
  В данный момент программа работает по условию, сами страницы совершенно не оформлены и написан только один тест.
 
