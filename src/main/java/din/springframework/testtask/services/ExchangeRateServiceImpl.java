@@ -8,6 +8,7 @@ import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
 
+@SuppressWarnings("ALL")
 @Service
 public class ExchangeRateServiceImpl implements ExchangeRateService {
 

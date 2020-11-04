@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
+@SuppressWarnings("ALL")
 @Transactional
 @Service
 public class CurrencyServiceImpl implements CurrencyService {

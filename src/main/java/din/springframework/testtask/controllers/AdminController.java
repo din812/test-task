@@ -2,16 +2,17 @@ package din.springframework.testtask.controllers;
 
 import din.springframework.testtask.model.Currency;
 import din.springframework.testtask.model.User;
+import din.springframework.testtask.services.CurrencyConverterHistoryServiceImpl;
 import din.springframework.testtask.services.CurrencyService;
 import din.springframework.testtask.services.UserServiceImpl;
-import din.springframework.testtask.services.CurrencyConverterHistoryServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 
@@ -19,6 +20,7 @@ import java.util.List;
 @Controller
 public class AdminController {
 
+    public static final String ADMIN_PAGE = "admin";
     private final UserServiceImpl userServiceImpl;
     private final CurrencyConverterHistoryServiceImpl historyService;
     private final CurrencyService currencyService;
@@ -29,28 +31,37 @@ public class AdminController {
         this.currencyService = currencyService;
     }
 
+    /**
+     * Utility method, loads on AdminController call, used for generating currency name in tables.
+     * @return returns list of Currencies data.
+     */
     @ModelAttribute("currencyList")
     public List<Currency> currencyList() {
         return (List<Currency>) currencyService.findAll();
     }
 
+    /**
+     * Main admin GET method, loads pageableUsers in a table and sorts when by ID.
+     * @param pageableUsers used for paging table with users.
+     * @return loads admin.html
+     */
+    @SuppressWarnings("SameReturnValue")
     @GetMapping("/admin")
     public String userList(@PageableDefault(sort = "id") @Qualifier("allUsersPage") Pageable pageableUsers,
                                                                                                         Model model) {
         model.addAttribute("allUsersPage", userServiceImpl.findAll(pageableUsers));
-        return "admin";
+        return ADMIN_PAGE;
     }
 
-    @PostMapping("/admin")
-    public String  deleteUser(@RequestParam(required = true, defaultValue = "" ) Long userId,
-                              @RequestParam(required = true, defaultValue = "" ) String action,
-                              Model model) {
-        if (action.equals("delete")){
-            userServiceImpl.deleteUser(userId);
-        }
-        return "redirect:/admin";
-    }
-
+    /**
+     * Post method used to find user by ID in database and retrieve his data and convert history into pageable table.
+     * Implemented some error handling.
+     * @param pageableHistory used for paging table with user history.
+     * @param pageableUsers used for paging table with users.
+     * @param userId ID submitted from admin.html, used to find users history with userServiceImpl
+     * @return loads admin.html
+     */
+    @SuppressWarnings("SameReturnValue")
     @GetMapping("/admin/get/")
     public String getUser(@Qualifier("userHistory") Pageable pageableHistory,
                            @PageableDefault(sort = "id") @Qualifier("allUsersPage") Pageable pageableUsers,
@@ -70,7 +81,6 @@ public class AdminController {
         } catch (NumberFormatException e) {
             model.addAttribute("requestError", true);
         }
-
-        return "admin";
+        return ADMIN_PAGE;
     }
 }

@@ -2,9 +2,9 @@ package din.springframework.testtask.services;
 
 import din.springframework.testtask.bootstrap.DataSourceParser;
 import din.springframework.testtask.exceptions.ConvertException;
+import din.springframework.testtask.model.CurrencyConverterHistory;
 import din.springframework.testtask.model.ExchangeRate;
 import din.springframework.testtask.model.User;
-import din.springframework.testtask.model.CurrencyConverterHistory;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
@@ -39,10 +39,9 @@ public class ConverterService {
      * @param goalCurrencyId ID of "goal" currency which will be converted TO.
      * @param iniValue  value of converted currency.
      */
-    public String convert(String iniCurrencyId, String goalCurrencyId, BigDecimal iniValue, User user) throws ConvertException {
-        LocalDate localDate = LocalDate.now();
-
-        updateExchangeRateIfNeeded(localDate);
+    public String convert(String iniCurrencyId, String goalCurrencyId, BigDecimal iniValue, User user) throws
+                                                                                                      ConvertException {
+        updateExchangeRateIfNeeded(LocalDate.now());
 
         ExchangeRate iniCurrency = exchangeCurrencyService.findFirstByCurrency_IdOrderByDateDesc(iniCurrencyId);
         ExchangeRate goalCurrency = exchangeCurrencyService.findFirstByCurrency_IdOrderByDateDesc(goalCurrencyId);
@@ -78,6 +77,14 @@ public class ConverterService {
         return valueInGoalCurrency.toString();
     }
 
+    /**
+     * Saves current conversion in database
+     * @param iniCurrencyId  ID of "initial" currency which will be converted FROM.
+     * @param goalCurrencyId ID of "goal" currency which will be converted TO.
+     * @param iniValue  value of converted currency.
+     * @param goalValue value we got from converting currencies
+     * @param user user who made conversion
+     */
     private void saveHistoryInDB(String iniCurrencyId, String goalCurrencyId, BigDecimal iniValue, BigDecimal goalValue,
                                                                                                         User user) {
         CurrencyConverterHistory convertHistory = new CurrencyConverterHistory();
@@ -91,6 +98,11 @@ public class ConverterService {
         converterHistoryService.save(convertHistory);
     }
 
+    /**
+     * Checks if database contains latest data. Because CRB.RU doesn't update everyday, we parse make new request to
+     * DataSourceParser to get latest data.
+     * @param localDate current date
+     */
     private void updateExchangeRateIfNeeded(LocalDate localDate) {
         if (!exchangeCurrencyService.existsByDate(localDate)) {
             new DataSourceParser(exchangeCurrencyService, currencyService); //task doesn't require error handling

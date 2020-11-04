@@ -17,6 +17,7 @@ import javax.persistence.PersistenceContext;
 import java.util.List;
 import java.util.Optional;
 
+@SuppressWarnings({"ALL", "OptionalGetWithoutIsPresent"})
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService {
     @PersistenceContext
@@ -48,10 +49,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         return userFromDb.orElse(new User());
     }
 
-    public List<User> allUsers() {
-        return (List<User>) userRepository.findAll();
-    }
-
     public boolean saveUser(User user) {
         User userFromDB = userRepository.findByUsername(user.getUsername());
 
@@ -63,20 +60,6 @@ public class UserServiceImpl implements UserDetailsService, UserService {
         user.setPassword(bCryptPasswordEncoder.encode(user.getPassword()));
         userRepository.save(user);
         return true;
-    }
-
-    public boolean deleteUser(Long userId) {
-        if (userRepository.findById(userId).isPresent()) {
-            userRepository.deleteById(userId);
-            return true;
-        }
-        return false;
-    }
-
-    public List<User> getUserList(Long idMin) {
-        return em.createQuery("SELECT u FROM User u WHERE u.id > :paramId", User.class)
-                .setParameter("paramId", idMin)
-                .getResultList();
     }
 
     @Override

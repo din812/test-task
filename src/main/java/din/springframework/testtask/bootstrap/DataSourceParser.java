@@ -2,8 +2,8 @@ package din.springframework.testtask.bootstrap;
 
 import din.springframework.testtask.model.ExchangeRate;
 import din.springframework.testtask.model.ValCurs;
-import din.springframework.testtask.repositories.ExchangeRateRepository;
 import din.springframework.testtask.repositories.CurrencyRepository;
+import din.springframework.testtask.repositories.ExchangeRateRepository;
 import org.springframework.stereotype.Component;
 
 import javax.xml.bind.JAXBContext;
@@ -55,7 +55,7 @@ public class DataSourceParser {
 
     /**
      * Converting source structure and data format into our POJOs for easier use.
-     * @param valCurs - main part of source POJO, contains ValCurs and Valute (Currency) data.
+     * @param valCurs - main part of source POJO, contains ExchangeRate and Currency data.
      */
     public void convertSourcePojoStructure(ValCurs valCurs) {
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd.MM.yyyy");
@@ -65,6 +65,7 @@ public class DataSourceParser {
                     .forEach(currency -> {
                         ExchangeRate exchangeRate = new ExchangeRate();
                         exchangeRate.setDate(LocalDate.parse(valCurs.getDate(), formatter));
+                        //replacing comma with dot for easier use with BigDecimal later
                         exchangeRate.setNominal(currency.getNominal().replaceAll(",", "."));
                         exchangeRate.setValue(currency.getValue().replaceAll(",", "."));
                         exchangeRate.setCurrency(currency);

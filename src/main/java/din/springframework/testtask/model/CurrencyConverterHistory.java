@@ -3,7 +3,6 @@ package din.springframework.testtask.model;
 import lombok.*;
 
 import javax.persistence.*;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.UUID;
 
@@ -27,6 +26,7 @@ public class CurrencyConverterHistory {
 
     private String goalSum;
 
+    @SuppressWarnings("JpaDataSourceORMInspection")
     @ManyToOne
     @JoinColumn(name = "id")
     private User user;

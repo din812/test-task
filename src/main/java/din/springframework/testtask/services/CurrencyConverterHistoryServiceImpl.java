@@ -1,23 +1,19 @@
 package din.springframework.testtask.services;
 
 import din.springframework.testtask.model.CurrencyConverterHistory;
-import din.springframework.testtask.repositories.UserRepository;
 import din.springframework.testtask.repositories.CurrencyConverterHistoryRepository;
-import org.assertj.core.util.Lists;
+import din.springframework.testtask.repositories.UserRepository;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.lang.NonNull;
-import org.springframework.lang.NonNullApi;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Optional;
 import java.util.Set;
 import java.util.UUID;
 
+@SuppressWarnings("ALL")
 @Service
 public class CurrencyConverterHistoryServiceImpl implements CurrencyConverterHistoryService {
 
@@ -32,9 +28,10 @@ public class CurrencyConverterHistoryServiceImpl implements CurrencyConverterHis
 
     @Override
     public Set<CurrencyConverterHistory>
-                findAllByQueryDateLessThanEqualAndQueryDateGreaterThanEqual(LocalDateTime queryDate, LocalDateTime queryDate2) {
+                findAllByQueryDateLessThanEqualAndQueryDateGreaterThanEqual(LocalDateTime queryDate, LocalDateTime
+                                                                                                           queryDate2) {
         return currencyConverterHistoryRepository.findAllByQueryDateLessThanEqualAndQueryDateGreaterThanEqual(queryDate,
-                queryDate2);
+                                                                                                            queryDate2);
     }
 
     @Override
@@ -44,11 +41,6 @@ public class CurrencyConverterHistoryServiceImpl implements CurrencyConverterHis
                 .removeIf(currency -> currency.getUser() != userRepository.findById(id)
                         .orElse(null));
         return historySet;
-    }
-
-    @Override
-    public Page<CurrencyConverterHistory> findHistoryId(Pageable pageable, Long id) {
-        return new PageImpl<>(Lists.newArrayList(currencyConverterHistoryRepository.findAllByUser_Id(id)));
     }
 
     @Override

@@ -22,10 +22,10 @@ public class User implements UserDetails {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Size(min=5, message = "Не меньше 5 знаков")
+    @Size(min=5, message = "Логин должен быть больше 6 знаков")
     private String username;
 
-    @Size(min=5, message = "Не меньше 5 знаков")
+    @Size(min=6, message = "Пароль должен быть больше 6 знаков")
     private String password;
 
     @Transient

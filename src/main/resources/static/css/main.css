@@ -9,6 +9,11 @@ p.error {
     color: red;
 }
 
+p.sysMessage {
+    font-weight: bold;
+    color: cornflowerblue;
+}
+
 div.logout {
     float: right;
 }

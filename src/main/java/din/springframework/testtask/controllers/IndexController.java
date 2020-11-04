@@ -7,20 +7,34 @@ import org.springframework.web.bind.annotation.RequestMapping;
 @Controller
 public class IndexController {
 
+    public static final String INDEX_PAGE = "index";
+    public static final String LOGIN_PAGE = "login";
+
+    /**
+     * Main page
+     */
+    @SuppressWarnings("SameReturnValue")
     @RequestMapping({"/index", "/"})
     public String root() {
-        return "index";
+        return INDEX_PAGE;
     }
 
+    /**
+     * Login page
+     */
+    @SuppressWarnings("SameReturnValue")
     @RequestMapping("/login")
     public String login() {
-        return "login";
+        return LOGIN_PAGE;
     }
 
-    // Login form with error
+    /**
+     * Login form error handling
+     */
+    @SuppressWarnings("SameReturnValue")
     @RequestMapping("/login-error")
     public String loginError(Model model) {
         model.addAttribute("loginError", true);
-        return "login";
+        return LOGIN_PAGE;
     }
 }

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--suppress ALL -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
       xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -29,6 +30,7 @@
         <h4><a href="/registration">Зарегистрироваться</a></h4>
     </div>
 </div>
+<p th:if="${successfulRegistration}" class="sysMessage">Регистрация прошла успешно!</p>
 <h4><a href="#" th:href="@{/converter}" sec:authorize="isAuthenticated()">Конвертер валют</a></h4>
 </body>
 </html>

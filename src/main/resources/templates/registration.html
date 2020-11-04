@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<!--suppress ALL -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org">
 <head>
     <title>Страница регистрации</title>
@@ -8,23 +9,30 @@
 <body>
 <form action="#" th:action="@{/registration}" th:object="${userForm}" method="POST">
     <h2>Регистрация</h2>
+    <p th:if="${passwordError}" class="error">Пароли не совпадают.</p>
+    <p th:if="${usernameError}" class="error">Пользователь с таким именем уже существует.</p>
     <div>
         <label>
             <input type="text" th:field="*{username}" placeholder="Логин" autofocus="true"/>
+            <span th:if="${#fields.hasErrors('username')}" th:errors="*{username}"
+                  class="error">Логин должен быть длиннее 5 символов.</span>
         </label>
     </div>
     <div>
         <label>
-            <input type="text" th:field="*{password}" placeholder="Пароль"/>
+            <input type="password" th:field="*{password}" placeholder="Пароль"/>
+            <span th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+            class="error">Пароль должен быть длиннее 5 символов.</span>
         </label>
     </div>
     <div>
         <label>
-            <input type="text" th:field="*{passwordConfirm}" placeholder="Подтвердите пароль"/>
+            <input type="password" th:field="*{passwordConfirm}" placeholder="Подтвердите пароль"/>
         </label>
     </div>
     <button type="submit">Зарегистрироваться</button>
 </form>
 <a href="/">Главная</a>
+
 </body>
 </html>

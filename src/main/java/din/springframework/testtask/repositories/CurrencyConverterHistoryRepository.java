@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.repository.PagingAndSortingRepository;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Set;
 import java.util.UUID;
@@ -25,6 +24,12 @@ public interface CurrencyConverterHistoryRepository extends PagingAndSortingRepo
 
     Long countAllByUserId(Long userId);
 
+    /**
+     * Get collection of queries by User ID and sort them by Query Date and it's ID.
+     * @param id user ID
+     * @param pageable needed for paging
+     * @return pageable
+     */
     Page<CurrencyConverterHistory> findAllByUserIdOrderByQueryDateDescUuidDescInitialSumDesc(Long id,
                                                                                                     Pageable pageable);
 }
