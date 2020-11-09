@@ -26,7 +26,6 @@ public class CurrencyConverterHistory {
 
     private String goalSum;
 
-    @SuppressWarnings("JpaDataSourceORMInspection")
     @ManyToOne
     @JoinColumn(name = "id")
     private User user;

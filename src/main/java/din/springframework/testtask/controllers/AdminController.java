@@ -5,7 +5,6 @@ import din.springframework.testtask.model.User;
 import din.springframework.testtask.services.CurrencyConverterHistoryServiceImpl;
 import din.springframework.testtask.services.CurrencyService;
 import din.springframework.testtask.services.UserServiceImpl;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 
 import java.util.List;
 
-@Slf4j
 @Controller
 public class AdminController {
 
@@ -45,7 +43,6 @@ public class AdminController {
      * @param pageableUsers used for paging table with users.
      * @return loads admin.html
      */
-    @SuppressWarnings("SameReturnValue")
     @GetMapping("/admin")
     public String userList(@PageableDefault(sort = "id") @Qualifier("allUsersPage") Pageable pageableUsers,
                                                                                                         Model model) {
@@ -61,11 +58,10 @@ public class AdminController {
      * @param userId ID submitted from admin.html, used to find users history with userServiceImpl
      * @return loads admin.html
      */
-    @SuppressWarnings("SameReturnValue")
     @GetMapping("/admin/get/")
-    public String getUser(@Qualifier("userHistory") Pageable pageableHistory,
-                           @PageableDefault(sort = "id") @Qualifier("allUsersPage") Pageable pageableUsers,
-                           @ModelAttribute("userId") String userId, Model model) {
+    public String getUser(@PageableDefault(sort = "queryDate") @Qualifier("userHistory") Pageable pageableHistory,
+                          @PageableDefault(sort = "id") @Qualifier("allUsersPage") Pageable pageableUsers,
+                          @ModelAttribute("userId") String userId, Model model) {
         model.addAttribute("allUsersPage", userServiceImpl.findAll(pageableUsers));
         try {
             User userFound = userServiceImpl.findUserById(Long.valueOf(userId));

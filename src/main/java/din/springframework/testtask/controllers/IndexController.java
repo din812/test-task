@@ -13,7 +13,6 @@ public class IndexController {
     /**
      * Main page
      */
-    @SuppressWarnings("SameReturnValue")
     @RequestMapping({"/index", "/"})
     public String root() {
         return INDEX_PAGE;
@@ -22,7 +21,6 @@ public class IndexController {
     /**
      * Login page
      */
-    @SuppressWarnings("SameReturnValue")
     @RequestMapping("/login")
     public String login() {
         return LOGIN_PAGE;
@@ -31,7 +29,6 @@ public class IndexController {
     /**
      * Login form error handling
      */
-    @SuppressWarnings("SameReturnValue")
     @RequestMapping("/login-error")
     public String loginError(Model model) {
         model.addAttribute("loginError", true);

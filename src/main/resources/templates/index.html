@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <!--suppress ALL -->
 <html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5"
-      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-      xsi:schemaLocation="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5 ">
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity5">
 <head>
     <title>Главная страница</title>
     <meta charset="utf-8"/>
     <link rel="stylesheet" href="../static/css/main.css" th:href="@{/css/main.css}"/>
+    <link rel="stylesheet" href="../static/css/button.css" th:href="@{/css/button.css}"/>
 </head>
 <body>
 <div th:fragment="logout" class="logout" sec:authorize="isAuthenticated()">
@@ -15,12 +14,12 @@
     Roles: <span sec:authentication="principal.authorities"></span>
     <div>
         <form action="#" th:action="@{/logout}" method="post">
-            <input type="submit" value="Logout"/>
+            <button type="submit" value="Logout">Выйти</button>
         </form>
     </div>
     <div th:if="${#authorization.expression('hasAuthority(''ADMIN'')')}">
         <form action="#" th:action="@{/admin}" method="get">
-            <input type="submit" value="Admin menu">
+            <button type="submit" value="Меню администратора">Меню администратора</button>
         </form>
     </div>
 </div>

@@ -7,7 +7,6 @@ import javax.xml.bind.annotation.*;
 import java.io.Serializable;
 import java.util.Set;
 
-@SuppressWarnings("SpellCheckingInspection")
 @XmlRootElement(name = "Valute")
 @Data
 @NoArgsConstructor

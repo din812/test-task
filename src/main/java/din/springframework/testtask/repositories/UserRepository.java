@@ -5,7 +5,7 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 
 public interface UserRepository extends PagingAndSortingRepository<User, Long> {
     /**
-     * Searches database for required username and returns it
+     * Searches database for required username and returns User entity if DB contains user with such username else null
      */
     User findByUsername(String username);
 }

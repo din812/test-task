@@ -32,7 +32,6 @@ public class RegistrationController {
     /**
      * GET method for registration page, creates new User and adds it to model as userForm.
      */
-    @SuppressWarnings("SameReturnValue")
     @GetMapping("/registration")
     public String registration(Model model) {
         model.addAttribute("userForm", new User());
